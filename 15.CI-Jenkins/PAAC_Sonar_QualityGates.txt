@@ -1,4 +1,4 @@
-```t
+
 pipeline {
     agent any
     tools {
@@ -68,7 +68,7 @@ pipeline {
 
     }
 }
-```
+
 Explanation
 This stage is part of a Jenkins pipeline that integrates with SonarQube to enforce code quality standards via a Quality Gate. Here's a detailed breakdown of what it does:
 1. Purpose
