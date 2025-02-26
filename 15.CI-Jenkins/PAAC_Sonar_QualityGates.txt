@@ -1,3 +1,4 @@
+```t
 pipeline {
     agent any
     tools {
@@ -67,3 +68,29 @@ pipeline {
 
     }
 }
+```
+Explanation
+This stage is part of a Jenkins pipeline that integrates with SonarQube to enforce code quality standards via a Quality Gate. Here's a detailed breakdown of what it does:
+1. Purpose
+The Quality Gate stage ensures that the code meets predefined quality criteria (e.g., code coverage, bug count, vulnerabilities) as defined in SonarQube.
+If the Quality Gate fails (e.g., due to insufficient test coverage or high code smells), the pipeline will stop execution.
+2. Key Components
+timeout(time: 1, unit: 'HOURS')
+Sets a timeout for the waitForQualityGate step.
+If the Quality Gate result is not received from SonarQube within 1 hour, the stage will fail due to a timeout.
+This prevents the pipeline from hanging indefinitely if SonarQube is slow or unresponsive.
+waitForQualityGate abortPipeline: true
+This step pauses the pipeline until SonarQube completes its analysis and sends the Quality Gate result back to Jenkins via a webhook.
+The abortPipeline: true parameter ensures:
+If the Quality Gate fails (status is not OK), the pipeline is aborted immediately with an error.
+If set to false, the pipeline would continue but could be marked as UNSTABLE.
+3. Workflow
+SonarQube Analysis:
+In an earlier stage of the pipeline (not shown here), the project is analyzed using SonarQube (e.g., via mvn sonar:sonar).
+Wait for Quality Gate:
+Jenkins waits for SonarQube to process the analysis and return a Quality Gate result.
+Result Handling:
+If the Quality Gate passes (OK status), the pipeline continues.
+If it fails (e.g., due to low code coverage or critical issues), Jenkins aborts the pipeline with an error message.
+Timeout Handling:
+If SonarQube doesn't respond within 1 hour, Jenkins cancels this stage and marks it as failed.
