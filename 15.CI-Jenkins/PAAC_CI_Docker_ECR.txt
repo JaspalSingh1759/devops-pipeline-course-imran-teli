@@ -84,6 +84,11 @@ pipeline {
             }
           }
      }
+     stage('Remove Container Images from Jenkins Server') {
+	    steps{
+		sh 'docker rmi -f $(docker images -a -q)'
+	    }
+     }
 
   }
 }
